@@ -1,3 +1,2 @@
-# react fluent emoji
-
-## Q
+# react-fluent-emoji
+react fluent emoji
