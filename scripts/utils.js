@@ -1,4 +1,4 @@
-import { upperFirst } from 'lodash-es';
+import { upperFirst } from "lodash-es";
 
 /**
  * 将 snake case 的文件名转换成 pascal case
@@ -7,5 +7,5 @@ import { upperFirst } from 'lodash-es';
  * @returns
  */
 export const snakeCaseToPascalCase = (str) => {
-  return str.split('_').map(upperFirst).join('');
+  return str.split("_").map(upperFirst).join("");
 };
