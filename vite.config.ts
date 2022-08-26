@@ -11,7 +11,15 @@ export default defineConfig({
       "@/": path.resolve(__dirname, "./src")
     }
   },
-  plugins: [react()],
+  plugins: [
+    react()
+  ],
+  css: {
+    preprocessorOptions: {
+      less: {
+      },
+    }
+  },
   server: {
     open: true
   }

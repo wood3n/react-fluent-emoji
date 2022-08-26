@@ -1,25 +1,11 @@
-import React, { lazy, Suspense } from "react";
-import "./App.css";
-
-interface ComponentType {
-  default: React.ComponentType<React.SVGProps<SVGSVGElement>>;
-}
-
-const icons = import.meta.glob<ComponentType>("./icon-component/**/*.tsx");
+import { ConfigProvider } from "antd";
+import zhCN from "antd/es/locale/zh_CN";
+import "antd/dist/antd.css";
+import Doc from "./doc";
 
 function App() {
-  const paths = Object.keys(icons);
-
   return (
-    <div>
-      <Suspense fallback={<div>loading...</div>}>
-        {paths.map(path => {
-          const Component = lazy(icons[path]);
-
-          return <Component key={path} width={120} height={120} />;
-        })}
-      </Suspense>
-    </div>
+    <ConfigProvider locale={zhCN}><Doc /></ConfigProvider>
   );
 }
 

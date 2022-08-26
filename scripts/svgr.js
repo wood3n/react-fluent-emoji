@@ -2,48 +2,38 @@ import { transform } from "@svgr/core";
 import fs from "fs-extra";
 import path from "path";
 import glob from "glob";
-import { snakeCaseToPascalCase } from "./utils.js";
+import { last } from "lodash-es";
+import { snakeCaseToPascalCase } from "../utils/index.js";
 
 (() => {
-  const root = process.cwd();
-  const filePaths = glob.sync("src/fluent-emoji/**/*.svg", {
-    cwd: root,
-  });
+  const cwd = process.cwd();
 
-  const transfom = (svg, iconName) => {
-    const jsCode = transform.sync(
-      svg,
+  const transfom = (filePath) => {
+    const iconName = snakeCaseToPascalCase(path.basename(filePath, ".svg"));
+    const iconType = last(path.dirname(filePath).split(path.sep)).toLocaleLowerCase();
+    const svgCode = fs.readFileSync(path.resolve(cwd, filePath));
+
+    const componentCode = transform.sync(
+      svgCode,
       {
         // width
         icon: false,
         typescript: true,
         // in sequence
-        // FIXME:some problem with svgo on 3D emoji
-        plugins: ["@svgr/plugin-jsx", "@svgr/plugin-prettier"],
-        jsxRuntime: "automatic",
-        // svgoConfig: {
-        //   plugins: [
-        //     {
-        //       name: "preset-default",
-        //       params: {
-        //         overrides: {
-        //           // disable remove viewBox, or it can't be controlled by width and height in react component
-        //           removeViewBox: false,
-        //         },
-        //       },
-        //     },
-        //   ],
-        // }
+        plugins: [
+          "@svgr/plugin-jsx",
+          "@svgr/plugin-prettier"
+        ],
+        jsxRuntime: "automatic"
       },
       { componentName: iconName },
     );
 
-    fs.writeFileSync(path.resolve(root, `src/icon-component/${iconName}.tsx`), jsCode);
+    fs.outputFileSync(path.resolve(cwd, `src/icon-component/${iconType}/${iconName}.tsx`), componentCode);
   };
 
-  filePaths.forEach(filePath => {
-    const iconName = snakeCaseToPascalCase(path.basename(filePath, ".svg"));
-    const svgXml = fs.readFileSync(path.resolve(root, filePath));
-    transfom(svgXml, iconName);
+  const filePaths = glob.sync("src/fluent-emoji/**/*.svg", {
+    cwd,
   });
+  filePaths.forEach(transfom);
 })();
