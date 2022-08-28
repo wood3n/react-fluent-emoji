@@ -7,7 +7,7 @@ import { upperFirst } from "lodash-es";
  * @returns
  */
 export const snakeCaseToPascalCase = (str) => {
-  return str.split("_").map(upperFirst).join("");
+  return str.split(/[_-]/).map(upperFirst).join("");
 };
 
 /**
