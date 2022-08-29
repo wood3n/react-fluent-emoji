@@ -31,3 +31,4 @@ export const getFileInfo = (path) => {
     iconName
   };
 };
+
