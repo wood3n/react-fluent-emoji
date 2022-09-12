@@ -57,5 +57,5 @@ import { snakeCaseToPascalCase } from "../utils/index.js";
   });
   filePaths.forEach(transfom);
 
-  console.log(`${count} icons has been trasnformed.`);
+  console.log(`${count} icons has been transformed.`);
 })();

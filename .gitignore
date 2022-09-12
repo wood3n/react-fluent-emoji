@@ -9,11 +9,12 @@ lerna-debug.log*
 
 node_modules
 dist
+out
 dist-ssr
 *.local
 
 # Editor directories and files
-.vscode/*
+.vscode
 !.vscode/extensions.json
 .idea
 .DS_Store
@@ -24,3 +25,6 @@ dist-ssr
 *.sw?
 
 pnpm-lock.yaml
+
+# svg sprite output
+icon-svg-sprite

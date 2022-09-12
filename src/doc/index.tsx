@@ -1,28 +1,37 @@
-import React, { useState, lazy, Suspense } from "react";
-import { Typography, Card, Modal, Row, Col, Tabs, Pagination } from "antd";
-import { chunk } from "lodash-es";
-import PageLoading from "./components/page-loading";
-import { getFileInfo } from "../../utils";
+import React, { useEffect, useState, useRef } from "react";
+import { Typography, Card, Modal, Tabs, Pagination, Spin, Row, Col } from "antd";
+import iconsStats from "./icons.json";
+import Icon from "./components/Icon";
 import styles from "./index.module.less";
-
-interface ComponentType {
-  default: React.ComponentType<React.SVGProps<SVGSVGElement>>;
-}
-
-console.time("resolve");
-const icons = import.meta.glob<ComponentType>("../icon-component/**/*.tsx");
-console.timeEnd("resolve");
-const colors = Object.keys(icons).filter(path => path.split("/").includes("color"));
-const flats = Object.keys(icons).filter(path => path.split("/").includes("flat"));
-const highContrasts = Object.keys(icons).filter(path => path.split("/").includes("high contrast"));
-const colorsChunks = chunk(colors, 80);
 
 /**
  * website
- * TODO:performance bad, try to make it faster
  */
 const Doc: React.FC = () => {
   const [pageIndex, setPageIndex] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const chunkCache = useRef<string[]>([]);
+
+  const fetchChunk = (chunk: string) => {
+    setLoading(true);
+    fetch(`./${chunk}`)
+      .then(res => res.text())
+      .then(svg => {
+        const div = document.createElement("div");
+        div.style.display = "none";
+        div.innerHTML = svg;
+        document.body.prepend(div);
+        chunkCache.current.push(chunk);
+      })
+      .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    const nextChunk = iconsStats[pageIndex - 1].chunk;
+    if(chunkCache.current.includes(nextChunk)) return;
+
+    fetchChunk(nextChunk);
+  }, [pageIndex]);
 
   const handleClick = () => {
     Modal.info({
@@ -42,47 +51,41 @@ const Doc: React.FC = () => {
 
   return (
     <div className={styles.container}>
-      <Suspense fallback={<PageLoading />}>
-        <Row className={styles.pageTitle}>
-          <Typography.Title level={1}>react fluent emoji</Typography.Title>
-        </Row>
-        <Row gutter={[16, 16]} wrap>
-          {colorsChunks[pageIndex-1].map(path => {
-            const Component = lazy(icons[path]);
-            const { fileName, iconName } = getFileInfo(path);
-
-            return (
-              <Col md={8} lg={6} xl={4} xxl={3} key={path}>
-                <Card
-                  hoverable
-                  onClick={handleClick}
-                  bodyStyle={{
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    alignItems: "center"
-                  }}
-                  style={{
-                    height: "100%"
-                  }}
-                >
-                  <Component width={64} height={64} />
-                  <Typography.Text type="secondary" style={{ marginTop: 24, textAlign: "center" }}>{iconName}</Typography.Text>
-                </Card>
-              </Col>
-            );
-          })}
-        </Row>
-      </Suspense>
+      <div className={styles.pageTitle}>
+        <Typography.Title level={1}>react fluent emoji</Typography.Title>
+      </div>
       <div className={styles.pagination}>
         <Pagination
           current={pageIndex}
-          pageSize={80}
-          total={colors.length}
+          pageSize={1}
+          total={iconsStats.length}
           showSizeChanger={false}
           onChange={pageIndex => setPageIndex(pageIndex)}
         />
       </div>
+      <Row gutter={[24, 24]} className={styles.iconList}>
+        {loading ? <div className={styles.spinContainer}><Spin /></div> : iconsStats[pageIndex-1].icons.map(id => {
+          return (
+            <Col key={id} span={4}>
+              <Card
+                hoverable
+                onClick={handleClick}
+                bodyStyle={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center"
+                }}
+                className={styles.iconCard}
+              >
+                <Icon id={id} />
+                <div className={styles.iconDescription}>
+                  {id}
+                </div>
+              </Card>
+            </Col>
+          ); })}
+      </Row>
     </div>
   );
 };

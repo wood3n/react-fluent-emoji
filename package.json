@@ -18,11 +18,16 @@
     "dist"
   ],
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview",
     "svgr": "node ./scripts/svgr.js",
-    "build:icon": "node ./scripts/icon-build.js"
+    "build:icon": "node ./scripts/packlib.js",
+    "sprite": "node --max-old-space-size=8192 ./scripts/svgSprite.js",
+    "doc": "vite",
+    "build:doc": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "peerDependencies": {
+    "react": ">=16.9",
+    "react-dom": ">=16.9"
   },
   "dependencies": {
     "react": "^18.2.0",
@@ -31,6 +36,7 @@
   "devDependencies": {
     "@babel/core": "^7.18.13",
     "@babel/eslint-parser": "^7.18.9",
+    "@prettier/plugin-xml": "^2.2.0",
     "@svgr/core": "^6.3.1",
     "@svgr/plugin-jsx": "^6.3.1",
     "@svgr/plugin-prettier": "^6.3.1",
@@ -47,7 +53,12 @@
     "glob": "^8.0.3",
     "less": "^4.1.3",
     "lodash-es": "^4.17.21",
+    "phantomjs-prebuilt": "2.1.16",
+    "prettier": "^2.7.1",
+    "rollup": "^2.79.0",
+    "svg-sprite": "^1.5.4",
     "typescript": "^4.6.4",
+    "vinyl": "^2.2.1",
     "vite": "^3.0.7"
   },
   "engines": {
