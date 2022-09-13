@@ -40,7 +40,8 @@ import { snakeCaseToPascalCase } from "../utils/index.js";
             "@svgr/plugin-jsx",
             "@svgr/plugin-prettier"
           ],
-          jsxRuntime: "automatic"
+          // support react 16
+          jsxRuntime: "classic"
         },
         { componentName: iconName },
       );

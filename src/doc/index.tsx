@@ -18,7 +18,8 @@ const Doc: React.FC = () => {
       .then(res => res.text())
       .then(svg => {
         const div = document.createElement("div");
-        div.style.display = "none";
+        // https://stackoverflow.com/a/24820654/11218434
+        div.style.position = "relative";
         div.innerHTML = svg;
         document.body.prepend(div);
         chunkCache.current.push(chunk);

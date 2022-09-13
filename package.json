@@ -19,7 +19,7 @@
   ],
   "scripts": {
     "svgr": "node ./scripts/svgr.js",
-    "build:icon": "node ./scripts/packlib.js",
+    "build": "node ./scripts/packlib.js",
     "sprite": "node --max-old-space-size=8192 ./scripts/svgSprite.js",
     "doc": "vite",
     "build:doc": "tsc && vite build",
@@ -28,10 +28,6 @@
   "peerDependencies": {
     "react": ">=16.9",
     "react-dom": ">=16.9"
-  },
-  "dependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.18.13",
